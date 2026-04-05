@@ -1,22 +1,26 @@
 package com.mycompany.aprendizado.view;
 
+import com.mycompany.aprendizado.dao.ServicoCRUD_dao;
+import com.mycompany.aprendizado.model.OrdemServico;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import com.mycompany.aprendizado.model.OrdemServico;
-import com.mycompany.aprendizado.dao.ServicoCRUD_dao;
 
 public class TelaCadastroOS extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-        
+    public void start(Stage stage) {
         Label lblNome = new Label("Nome do cliente:");
         TextField txtNome = new TextField();
 
@@ -32,6 +36,27 @@ public class TelaCadastroOS extends Application {
 
         Button btnCadastrar = new Button("Cadastrar");
         Button btnLimpar = new Button("Limpar");
+        Button btnListar = new Button("Listar");
+
+        TableView<OrdemServico> tabela = new TableView<>();
+
+        TableColumn<OrdemServico, Integer> colId = new TableColumn<>("ID");
+        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<OrdemServico, String> colNome = new TableColumn<>("Nome");
+        colNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
+
+        TableColumn<OrdemServico, Double> colValor = new TableColumn<>("Valor");
+        colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+
+        TableColumn<OrdemServico, Integer> colPrazo = new TableColumn<>("Prazo");
+        colPrazo.setCellValueFactory(new PropertyValueFactory<>("prazo"));
+
+        TableColumn<OrdemServico, String> colTipo = new TableColumn<>("Tipo");
+        colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo_servico"));
+
+        tabela.getColumns().addAll(colId, colNome, colValor, colPrazo, colTipo);
+        tabela.setPrefHeight(200);
 
         btnLimpar.setOnAction(e -> {
             txtNome.clear();
@@ -51,7 +76,8 @@ public class TelaCadastroOS extends Application {
                 ServicoCRUD_dao dao = new ServicoCRUD_dao();
                 dao.inserir(os);
 
-                System.out.println("Cadastro realizado com sucesso!");
+                ObservableList<OrdemServico> dados = FXCollections.observableArrayList(dao.listar());
+                tabela.setItems(dados);
 
                 txtNome.clear();
                 txtValor.clear();
@@ -65,6 +91,16 @@ public class TelaCadastroOS extends Application {
             }
         });
 
+        btnListar.setOnAction(e -> {
+            ServicoCRUD_dao dao = new ServicoCRUD_dao();
+            ObservableList<OrdemServico> dados = FXCollections.observableArrayList(dao.listar());
+            tabela.setItems(dados);
+        });
+
+        ServicoCRUD_dao dao = new ServicoCRUD_dao();
+        ObservableList<OrdemServico> dados = FXCollections.observableArrayList(dao.listar());
+        tabela.setItems(dados);
+
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15));
         layout.getChildren().addAll(
@@ -72,18 +108,18 @@ public class TelaCadastroOS extends Application {
                 lblValor, txtValor,
                 lblPrazo, txtPrazo,
                 lblTipo, cbTipo,
-                btnCadastrar, btnLimpar
+                btnCadastrar, btnLimpar, btnListar,
+                tabela
         );
 
-        Scene scene = new Scene(layout, 350, 350);
+        Scene scene = new Scene(layout, 500, 550);
 
         stage.setTitle("Cadastro de Ordem de Serviço");
         stage.setScene(scene);
         stage.show();
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
-    
 }

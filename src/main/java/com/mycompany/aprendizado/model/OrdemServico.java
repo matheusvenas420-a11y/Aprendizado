@@ -7,6 +7,9 @@ public class OrdemServico {
     protected int prazo;
     protected String tipo_servico;
 
+    public OrdemServico() {
+    }
+
     public OrdemServico(String nome, double valor, int prazo, String tipo_servico) {
         this.nome = nome;
         this.valor = valor;

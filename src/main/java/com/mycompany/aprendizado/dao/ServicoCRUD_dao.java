@@ -12,23 +12,22 @@ import java.util.List;
 public class ServicoCRUD_dao {
 
     public void inserir(OrdemServico os) {
-        String sql = "INSERT INTO ordem_servico (nome_cliente, valor, prazo, tipo_servico) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO ordem_servico (nome_cliente, valor, prazo, tipo_servico) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = ConexaoBD.conectar();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = ConexaoBD.conectar();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, os.getNome());
-            ps.setDouble(2, os.getValor());
-            ps.setInt(3, os.getPrazo());
-            ps.setString(4, os.getTipo_servico());
+        ps.setString(1, os.getNome());
+        ps.setDouble(2, os.getValor());
+        ps.setInt(3, os.getPrazo());
+        ps.setString(4, os.getTipo_servico());
 
-            ps.executeUpdate();
-            System.out.println("Inserido com sucesso!");
+        ps.executeUpdate(); // 🔥 ISSO FALTAVA
 
-        } catch (SQLException e) {
-            System.out.println("Erro ao inserir: " + e.getMessage());
-        }
+    } catch (Exception e) {
+        System.out.println("Erro ao inserir: " + e.getMessage());
     }
+}
 
     public List<OrdemServico> listar() {
         List<OrdemServico> lista = new ArrayList<>();
